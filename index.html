@@ -466,22 +466,22 @@
         <!-- Timer buttons positioned over background -->
         <div class="timer-buttons-container">
             <div class="timer-grid">
-                <!-- Nút 5 phút -->
+                <!-- 5 min button -->
                 <button class="timer-button btn-5min" data-time="300">
                     <div class="timer-time">05:00</div>
                 </button>
                 
-                <!-- Nút 15 phút -->
+                <!-- 15 min button -->
                 <button class="timer-button btn-15min" data-time="900">
                     <div class="timer-time">15:00</div>
                 </button>
                 
-                <!-- Nút 30 phút -->
+                <!-- 30 min button -->
                 <button class="timer-button btn-30min" data-time="1800">
                     <div class="timer-time">30:00</div>
                 </button>
                 
-                <!-- Nút tùy chỉnh -->
+                <!-- custom button -->
                 <button class="timer-button btn-custom" data-time="custom">
                     <input type="number" class="custom-input" id="customMinutes" placeholder="10" min="1" max="999">
                     <div style="font-size: 0.8rem; margin-top: 2px; color: #7C457D; font-weight: 700;">min</div>
@@ -502,7 +502,7 @@
         const loginForm = document.getElementById('loginForm');
         const logoutBtn = document.getElementById('logoutBtn');
 
-        // Xử lý đăng nhập
+        
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -514,16 +514,15 @@
                 return;
             }
             
-            // Hiệu ứng loading
+            
             const button = document.querySelector('.login-button');
             const originalText = button.textContent;
             button.disabled = true;
             button.textContent = 'Logging in...';
             
-            // Kiểm tra thông tin đăng nhập
+            
             setTimeout(() => {
                 if (username === validCredentials.username && password === validCredentials.password) {
-                    // Đăng nhập thành công - chuyển sang trang timer
                     loginPage.style.display = 'none';
                     timerPage.style.display = 'block';
                     loginForm.reset();
@@ -536,9 +535,7 @@
             }, 1500);
         });
 
-        // Xử lý đăng xuất
         logoutBtn.addEventListener('click', function() {
-            // Dừng timer nếu đang chạy
             if (currentTimer) {
                 clearInterval(currentTimer);
                 currentTimer = null;
@@ -546,18 +543,15 @@
             isRunning = false;
             startBtn.textContent = 'Start';
             
-            // Reset timer display
             mainDisplay.textContent = '00:00';
             mainLabel.textContent = 'Choose time to start';
             
-            // Xóa active button
             document.querySelectorAll('.timer-button').forEach(btn => {
                 btn.classList.remove('active');
             });
             selectedButton = null;
             timeLeft = 0;
             
-            // Chuyển về trang login
             timerPage.style.display = 'none';
             loginPage.style.display = 'flex';
         });
@@ -575,33 +569,29 @@
         const resetBtn = document.getElementById('resetBtn');
         const customInput = document.getElementById('customMinutes');
 
-        // Format thời gian
+        // Format time
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
             const secs = seconds % 60;
             return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
-        // Xử lý click các nút timer
+        // Handle click
         document.querySelectorAll('.timer-button').forEach(button => {
             button.addEventListener('click', function(e) {
-                // Ngăn sự kiện click khi click vào input
                 if (e.target.classList.contains('custom-input')) {
                     return;
                 }
 
-                // Xóa active từ tất cả nút
                 document.querySelectorAll('.timer-button').forEach(btn => {
                     btn.classList.remove('active');
                 });
 
-                // Thêm active cho nút được chọn
                 this.classList.add('active');
                 selectedButton = this;
 
                 const time = this.getAttribute('data-time');
                 
-                // Dừng timer hiện tại nếu có
                 if (currentTimer) {
                     clearInterval(currentTimer);
                     currentTimer = null;
@@ -623,7 +613,7 @@
             });
         });
 
-        // Xử lý input tùy chỉnh
+        // Handle customized input
         customInput.addEventListener('input', function() {
             if (selectedButton && selectedButton.getAttribute('data-time') === 'custom') {
                 const customMinutes = parseInt(this.value) || 1;
@@ -633,7 +623,7 @@
             }
         });
 
-        // Nút Start/Pause
+        // Start/Pause button
         startBtn.addEventListener('click', function() {
             if (!selectedButton) {
                 alert('Choose time to start');
@@ -641,12 +631,12 @@
             }
 
             if (isRunning) {
-                // Tạm dừng
+                // Pause
                 clearInterval(currentTimer);
                 isRunning = false;
                 this.textContent = 'Continue';
             } else {
-                // Bắt đầu/Tiếp tục
+                // Start/Pause
                 isRunning = true;
                 this.textContent = 'Pause';
 
@@ -664,7 +654,7 @@
             }
         });
 
-        // Nút Stop
+        // Stop button
         stopBtn.addEventListener('click', function() {
             if (currentTimer) {
                 clearInterval(currentTimer);
@@ -674,7 +664,7 @@
             startBtn.textContent = 'Start';
         });
 
-        // Nút Reset
+        // Reset button
         resetBtn.addEventListener('click', function() {
             if (currentTimer) {
                 clearInterval(currentTimer);
