@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mups Countdown Timer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sour+Gummy&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sour Gummy', cursive;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* LOGIN PAGE STYLES */
+        .login-page {
+            background: #FFE4E6;
+            background-image: url('login.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            position: relative;
+            padding-bottom: 50px;
+        }
+
+        .login-page::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('login.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }
+
+        .container {
+            position: fixed;
+            bottom: 120px;
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .login-form {
+            background: rgba(255, 255, 255, 0.1);
+            border: 3px solid #7C457D;
+            border-radius: 30px;
+            padding: 35px;
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .title {
+            font-size: 2.6rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 0;
+            color: #7C457D;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-style: italic;
+            visibility: hidden;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .form-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .form-group {
+            width: 100%;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #7C457D;
+            font-weight: bold;
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-input:focus {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 3px rgba(183, 148, 196, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: #B794C4;
+            opacity: 0.7;
+        }
+
+        .login-button {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #7C457D, #7C457D);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(183, 148, 196, 0.4);
+            font-style: italic;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .login-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(183, 148, 196, 0.6);
+        }
+
+        .login-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* TIMER PAGE STYLES */
+        .timer-page {
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            display: none;
+        }
+
+        .background-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('background.png'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .timer-buttons-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-grid {
+            display: flex;
+            flex-direction: row;
+            gap: 60px;
+            align-items: flex-start;
+            justify-content: center;
+            width: 100%;
+            max-width: 1020px;
+            margin-top: 150px;
+        }
+
+        .timer-button {
+            width: 200px;
+            height: 60px;
+            border-radius: 15px;
+            border: 3px solid #7C457D;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Sour Gummy', cursive;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #7C457D;
+            background: #FED5FF;
+            box-shadow: 0 4px 12px rgba(124, 69, 125, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timer-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(124, 69, 125, 0.4);
+            background: #FFE4FF;
+        }
+
+        .timer-button.active {
+            animation: pulse 1.5s infinite;
+            border: 4px solid #7C457D;
+            background: #FFE4FF;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .timer-time {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .custom-input {
+            width: 50px;
+            height: 25px;
+            border: 2px solid #7C457D;
+            border-radius: 8px;
+            text-align: center;
+            font-family: 'Sour Gummy', cursive;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-top: 5px;
+            background: #FED5FF;
+            color: #7C457D;
+        }
+
+        .main-timer-display {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            border: 4px solid #7C457D;
+            border-radius: 25px;
+            padding: 20px 40px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .main-timer-time {
+            font-size: 3rem;
+            color: #7C457D;
+            margin-bottom: 10px;
+        }
+
+        .main-timer-label {
+            font-size: 1rem;
+            color: #7C457D;
+            margin-bottom: 15px;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #FFE4FF, #FFE4FF);
+            color: #7C457D;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: 'Sour Gummy', cursive;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #7C457D, #7C457D);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-family: 'Sour Gummy', cursive;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(124, 69, 125, 0.4);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .login-page {
+                padding-bottom: 30px;
+            }
+            
+            .container {
+                padding: 20px;
+                max-width: 90%;
+            }
+            
+            .login-form {
+                padding: 25px 20px;
+                max-width: 100%;
+            }
+            
+            .title {
+                font-size: 1.8rem;
+            }
+            
+            .login-button {
+                max-width: 100%;
+            }
+
+            .timer-grid {
+                gap: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .timer-button {
+                width: 100px;
+                height: 100px;
+                font-size: 1rem;
+            }
+            
+            .main-timer-time {
+                font-size: 2.5rem;
+            }
+            
+            .main-timer-display {
+                bottom: 20px;
+                padding: 15px 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .timer-grid {
+                gap: 15px;
+            }
+            
+            .timer-button {
+                width: 80px;
+                height: 60px;
+                font-size: 0.9rem;
+            }
+            
+            .main-timer-display {
+                bottom: 50px;
+                padding: 12px 25px;
+            }
+            
+            .main-timer-time {
+                font-size: 2rem;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN PAGE -->
+    <div class="login-page" id="loginPage">
+        <div class="container">
+            <div class="login-form">
+                <h1 class="title">Mups' countdown timer</h1>
+                <form id="loginForm">
+                    <div class="form-container">
+                        <div class="form-fields">
+                            <div class="form-group">
+                                <label class="form-label" for="username">username</label>
+                                <input 
+                                    type="text" 
+                                    id="username" 
+                                    name="username" 
+                                    class="form-input"
+                                    required
+                                >
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="password">password</label>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    class="form-input"
+                                    required
+                                >
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="login-button">Log in</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIMER PAGE -->
+    <div class="timer-page" id="timerPage">
+        <button class="logout-btn" id="logoutBtn">Log out</button>
+        
+        <!-- Background image -->
+        <div class="background-container"></div>
+        
+        <!-- Main timer display -->
+        <div class="main-timer-display">
+            <div class="main-timer-time" id="mainDisplay">00:00</div>
+            <div class="main-timer-label" id="mainLabel">Choose time to start</div>
+            <div class="control-buttons">
+                <button class="control-btn" id="startBtn">Start</button>
+                <button class="control-btn stop" id="stopBtn">Stop</button>
+                <button class="control-btn reset" id="resetBtn">Reset</button>
+            </div>
+        </div>
+
+        <!-- Timer buttons positioned over background -->
+        <div class="timer-buttons-container">
+            <div class="timer-grid">
+                <!-- Nút 5 phút -->
+                <button class="timer-button btn-5min" data-time="300">
+                    <div class="timer-time">05:00</div>
+                </button>
+                
+                <!-- Nút 15 phút -->
+                <button class="timer-button btn-15min" data-time="900">
+                    <div class="timer-time">15:00</div>
+                </button>
+                
+                <!-- Nút 30 phút -->
+                <button class="timer-button btn-30min" data-time="1800">
+                    <div class="timer-time">30:00</div>
+                </button>
+                
+                <!-- Nút tùy chỉnh -->
+                <button class="timer-button btn-custom" data-time="custom">
+                    <input type="number" class="custom-input" id="customMinutes" placeholder="10" min="1" max="999">
+                    <div style="font-size: 0.8rem; margin-top: 2px; color: #7C457D; font-weight: 700;">min</div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // LOGIN FUNCTIONALITY
+        const validCredentials = {
+            username: 'mups',
+            password: 'maybeo'
+        };
+
+        const loginPage = document.getElementById('loginPage');
+        const timerPage = document.getElementById('timerPage');
+        const loginForm = document.getElementById('loginForm');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Xử lý đăng nhập
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username.trim() === '' || password.trim() === '') {
+                alert('Vui lòng nhập đầy đủ username và password!');
+                return;
+            }
+            
+            // Hiệu ứng loading
+            const button = document.querySelector('.login-button');
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'Logging in...';
+            
+            // Kiểm tra thông tin đăng nhập
+            setTimeout(() => {
+                if (username === validCredentials.username && password === validCredentials.password) {
+                    // Đăng nhập thành công - chuyển sang trang timer
+                    loginPage.style.display = 'none';
+                    timerPage.style.display = 'block';
+                    loginForm.reset();
+                } else {
+                    alert('Incorrect login information! Please try again.');
+                }
+                
+                button.textContent = originalText;
+                button.disabled = false;
+            }, 1500);
+        });
+
+        // Xử lý đăng xuất
+        logoutBtn.addEventListener('click', function() {
+            // Dừng timer nếu đang chạy
+            if (currentTimer) {
+                clearInterval(currentTimer);
+                currentTimer = null;
+            }
+            isRunning = false;
+            startBtn.textContent = 'Start';
+            
+            // Reset timer display
+            mainDisplay.textContent = '00:00';
+            mainLabel.textContent = 'Choose time to start';
+            
+            // Xóa active button
+            document.querySelectorAll('.timer-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            selectedButton = null;
+            timeLeft = 0;
+            
+            // Chuyển về trang login
+            timerPage.style.display = 'none';
+            loginPage.style.display = 'flex';
+        });
+
+        // TIMER FUNCTIONALITY
+        let currentTimer = null;
+        let timeLeft = 0;
+        let isRunning = false;
+        let selectedButton = null;
+
+        const mainDisplay = document.getElementById('mainDisplay');
+        const mainLabel = document.getElementById('mainLabel');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const customInput = document.getElementById('customMinutes');
+
+        // Format thời gian
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Xử lý click các nút timer
+        document.querySelectorAll('.timer-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                // Ngăn sự kiện click khi click vào input
+                if (e.target.classList.contains('custom-input')) {
+                    return;
+                }
+
+                // Xóa active từ tất cả nút
+                document.querySelectorAll('.timer-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // Thêm active cho nút được chọn
+                this.classList.add('active');
+                selectedButton = this;
+
+                const time = this.getAttribute('data-time');
+                
+                // Dừng timer hiện tại nếu có
+                if (currentTimer) {
+                    clearInterval(currentTimer);
+                    currentTimer = null;
+                }
+                isRunning = false;
+                startBtn.textContent = 'Start';
+
+                if (time === 'custom') {
+                    const customMinutes = parseInt(customInput.value) || 10;
+                    timeLeft = customMinutes * 60;
+                    mainLabel.textContent = `Countdown: ${customMinutes} min`;
+                } else {
+                    timeLeft = parseInt(time);
+                    const minutes = Math.floor(timeLeft / 60);
+                    mainLabel.textContent = `Countdown: ${minutes} min`;
+                }
+
+                mainDisplay.textContent = formatTime(timeLeft);
+            });
+        });
+
+        // Xử lý input tùy chỉnh
+        customInput.addEventListener('input', function() {
+            if (selectedButton && selectedButton.getAttribute('data-time') === 'custom') {
+                const customMinutes = parseInt(this.value) || 1;
+                timeLeft = customMinutes * 60;
+                mainDisplay.textContent = formatTime(timeLeft);
+                mainLabel.textContent = `Custom: ${customMinutes} min`;
+            }
+        });
+
+        // Nút Start/Pause
+        startBtn.addEventListener('click', function() {
+            if (!selectedButton) {
+                alert('Choose time to start');
+                return;
+            }
+
+            if (isRunning) {
+                // Tạm dừng
+                clearInterval(currentTimer);
+                isRunning = false;
+                this.textContent = 'Continue';
+            } else {
+                // Bắt đầu/Tiếp tục
+                isRunning = true;
+                this.textContent = 'Pause';
+
+                currentTimer = setInterval(() => {
+                    timeLeft--;
+                    mainDisplay.textContent = formatTime(timeLeft);
+
+                    if (timeLeft <= 0) {
+                        clearInterval(currentTimer);
+                        isRunning = false;
+                        startBtn.textContent = 'Start';
+                        alert('Time out!');
+                    }
+                }, 1000);
+            }
+        });
+
+        // Nút Stop
+        stopBtn.addEventListener('click', function() {
+            if (currentTimer) {
+                clearInterval(currentTimer);
+                currentTimer = null;
+            }
+            isRunning = false;
+            startBtn.textContent = 'Start';
+        });
+
+        // Nút Reset
+        resetBtn.addEventListener('click', function() {
+            if (currentTimer) {
+                clearInterval(currentTimer);
+                currentTimer = null;
+            }
+            isRunning = false;
+            startBtn.textContent = 'Start';
+
+            if (selectedButton) {
+                const time = selectedButton.getAttribute('data-time');
+                if (time === 'custom') {
+                    const customMinutes = parseInt(customInput.value) || 10;
+                    timeLeft = customMinutes * 60;
+                } else {
+                    timeLeft = parseInt(time);
+                }
+                mainDisplay.textContent = formatTime(timeLeft);
+            }
+        });
+    </script>
+</body>
+</html>
